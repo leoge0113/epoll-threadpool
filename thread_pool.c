@@ -1,8 +1,8 @@
 /*
  * thread_pool.c
  *
- *  Created on: 2015��2��4��
- *      Author: vae
+ *  Created on: 201610
+ *      Author: leo
  */
 #include "thread_pool_global.h"
 #include "thread_pool.h"
