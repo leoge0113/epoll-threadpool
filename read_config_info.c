@@ -1,0 +1,88 @@
+/*
+ * config_info.c
+ *
+ *  Created on: 2016.11
+ *      Author: Leo
+ */
+
+#include "file_operations.h"
+#include "config_info.h"
+
+int read_config_info(CONFIG_INFO *config_info)
+{
+	char *config_file_buff = NULL;
+	char *p = NULL;
+	int index = 0;
+	int ret = -1;
+	char key_word_buf[CONFIG_KEY_WORD_BUF_SIZE] = "";
+
+	config_file_buff = malloc(INI_FILE_BUF_SIZE);
+	if (config_file_buff == NULL)
+	{
+		printf("[%s %s %d] No enough memory!\n", __FILE__, __FUNCTION__, __LINE__);
+		return -1;
+	}
+	bzero(config_file_buff, INI_FILE_BUF_SIZE);
+
+	if (read_file_to_buff(SERVER_INI_FILE, INI_FILE_BUF_SIZE - 1, config_file_buff) != 0)
+	{
+		goto EXIT;
+	}
+
+	bzero(config_info, sizeof(CONFIG_INFO));
+	for (index = 0; index < MAX_NO_OF_CONFIG_KEY_WORD; index++)
+	{
+		p = strstr(config_file_buff, config_file_key_word[index]);
+		if (p == NULL)
+		{
+			goto EXIT;
+		}
+
+		p = strchr(p, '=');
+		if (p == NULL)
+		{
+			goto EXIT;
+		}
+		p++;
+
+		/* tab or space */
+		while (p[0] == 9 || p[0] == 32)
+			p++;
+
+		if (!parse_config_key_word(p, key_word_buf))
+		{
+			continue;
+		}
+
+		switch (index)
+		{
+			case CON_VERSION:
+				snprintf(config_info->version, sizeof(config_info->version), "%s", key_word_buf);
+				break;
+			case CON_LOG_LEVEL:
+				config_info->log_level = atoi(key_word_buf);
+				break;
+			case CON_MYSQL_BRANCH_SERVER_ADDR:
+				snprintf(config_info->mysql_branch_server_addr, MIN(PATH_BUFF_SIZE, CONFIG_KEY_WORD_BUF_SIZE), "%s", key_word_buf);
+				break;
+			case CON_MYSQL_SERVER_PORT:
+				config_info->mysql_server_port = atol(key_word_buf);
+				break;
+			case CON_MYSQL_DB_NAME:
+				snprintf(config_info->mysql_db_name, MIN(sizeof(config_info->mysql_db_name), CONFIG_KEY_WORD_BUF_SIZE), "%s", key_word_buf);
+				break;
+			case CON_MYSQL_USER_NAME:
+				snprintf(config_info->mysql_user_name, MIN(sizeof(config_info->mysql_user_name), CONFIG_KEY_WORD_BUF_SIZE), "%s", key_word_buf);
+				break;
+			case CON_MYSQL_PASSWORD:
+				snprintf(config_info->mysql_password, MIN(sizeof(config_info->mysql_password), CONFIG_KEY_WORD_BUF_SIZE), "%s", key_word_buf);
+				break;
+		}
+	}
+	ret = 0;
+
+EXIT:
+	free(config_file_buff);
+	return ret;
+}
+
