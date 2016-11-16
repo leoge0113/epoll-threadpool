@@ -7,6 +7,38 @@
 
 #include "file_operations.h"
 #include "config_info.h"
+//Below variable should correspond with structure CONFIG_INFO_KEY_WORD_ID and CONFIG_INFO.
+static char *config_file_key_word[MAX_NO_OF_CONFIG_KEY_WORD] =
+{
+		"Version",
+		"LogLevel",
+		"MySqlBranchServerAddr",
+		"MySqlServerPort",
+		"MySqlDbName",
+		"MySqlUserName",
+		"MySqlPassword",
+};
+static BOOL parse_config_key_word(char *data, char *key_word)
+{
+	char *p;
+	int i;
+	BOOL ret = FALSE;
+
+	p = data;
+	if (strchr(p, ';') != NULL || strchr(p, '\n') != NULL)
+	{
+		i = 0;
+		while (i < CONFIG_KEY_WORD_BUF_SIZE && p[i] != ';' && p[i] != '\n')
+		{
+			key_word[i] = p[i];
+			i++;
+		}
+		key_word[MIN(i, CONFIG_KEY_WORD_BUF_SIZE-1)] = '\0';
+		ret = TRUE;
+	}
+
+	return ret;
+}
 
 int read_config_info(CONFIG_INFO *config_info)
 {
@@ -85,4 +117,3 @@ EXIT:
 	free(config_file_buff);
 	return ret;
 }
-
