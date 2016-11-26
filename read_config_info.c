@@ -117,3 +117,14 @@ EXIT:
 	free(config_file_buff);
 	return ret;
 }
+void print_config_info(CONFIG_INFO config_info)
+{
+	printf("[%s %s %d] config_info.version: %s\n", __FILE__, __FUNCTION__, __LINE__, config_info.version);
+	printf("[%s %s %d] config_info.LogLevel: %d\n", __FILE__, __FUNCTION__, __LINE__, config_info.log_level);
+	printf("[%s %s %d] config_info.mysql_branch_server_addr: %s\n", __FILE__, __FUNCTION__, __LINE__, config_info.mysql_branch_server_addr);
+	printf("[%s %s %d] config_info.mysql_server_port: %d\n", __FILE__, __FUNCTION__, __LINE__, config_info.mysql_server_port);
+	printf("[%s %s %d] config_info.mysql_db_name: %s\n", __FILE__, __FUNCTION__, __LINE__, config_info.mysql_db_name);
+	printf("[%s %s %d] config_info.mysql_user_name: %s\n", __FILE__, __FUNCTION__, __LINE__, config_info.mysql_user_name);
+	printf("[%s %s %d] config_info.mysql_password: %s\n", __FILE__, __FUNCTION__, __LINE__, config_info.mysql_password);
+}
+
