@@ -1,3 +1,12 @@
+/*
+ * config_info.h
+ *
+ *  Created on: 2016/11
+ *      Author: Leo
+ */
+
+#ifndef CONFIG_INFO_H_
+#define CONFIG_INFO_H_
 #include "g_net_global.h"
 
 #define FILE_NAME_LEN				128
@@ -39,3 +48,7 @@ typedef struct _CONIFG_INFO
 int read_config_info(CONFIG_INFO *config_info);
 void print_config_info(CONFIG_INFO config_info);
 #endif /* _CONIFG_INFO */
+
+
+
+
