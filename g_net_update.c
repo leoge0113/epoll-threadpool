@@ -27,6 +27,22 @@ static int exit_accept_flag = 0; // is exit the accept
 static int exit_flag = 0; // is exit the epoll wait
 static int port = 8111;
 
+static void closesocket(int fd);
+static void dumpInfo(unsigned char *info, int length);
+pthread_mutex_t connect_total_count_mutex = PTHREAD_MUTEX_INITIALIZER;
+static void connect_total_count_opration(BOOL add_or_subract, int value)
+{
+	pthread_mutex_lock(&connect_total_count_mutex);
+	if (add_or_subract)
+	{
+		current_connected_total = current_connected_total + value;
+	}
+	else
+	{
+		current_connected_total = current_connected_total - value;
+	}
+	pthread_mutex_unlock(&connect_total_count_mutex);
+}
 
 int main(int argc, char *argv[])
 {
