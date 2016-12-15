@@ -43,6 +43,40 @@ static void connect_total_count_opration(BOOL add_or_subract, int value)
 	}
 	pthread_mutex_unlock(&connect_total_count_mutex);
 }
+static void signal_handler_reboot(int32_t theSignal)
+{
+	int i;
+	int sockfd;
+	char log_str_buf[LOG_STR_BUF_LEN];
+	signal(SIGPIPE, SIG_IGN);
+	if (SIGKILL == theSignal || SIGTERM == theSignal) //we can know when system excute child thread is end
+	{
+		snprintf(log_str_buf, LOG_STR_BUF_LEN, "receive kill signal exit the server.");
+		LOG_INFO(LOG_LEVEL_FATAL, log_str_buf);
+		if (listen_fd != -1)
+		{
+			closesocket(listen_fd);
+			listen_fd = -1;
+		}
+		exit_flag = 1;
+		exit_accept_flag = 1;
+		for (i = 0; i < MAX_EVENTS; i++)
+		{
+			sockfd = get_fd_by_event_index(i);
+			if (sockfd != -1)
+			{
+				closesocket(sockfd);
+			}
+		}
+#if CONNECT_TO_SQL_SUCCESS
+	sql_pool_destroy();
+#endif
+	}
+	else if (SIGPIPE == theSignal)
+	{
+		LOG_INFO(LOG_LEVEL_INFO, "SIGPIPE received.\n");
+	}
+}
 
 int main(int argc, char *argv[])
 {
