@@ -78,6 +78,33 @@ static void signal_handler_reboot(int32_t theSignal)
 	}
 }
 
+static void closesocket(int fd)
+{
+	shutdown(fd, SHUT_RDWR);
+	close(fd);
+}
+
+static int set_non_blocking(int sock)
+{
+	int opts = -1;
+	char log_str_buf[LOG_STR_BUF_LEN];
+
+	opts = fcntl(sock, F_GETFL);
+	if (opts < 0)
+	{
+		snprintf(log_str_buf, LOG_STR_BUF_LEN, "fcntl(sock=%d,GETFL).\n", sock);
+		LOG_INFO(LOG_LEVEL_ERROR, log_str_buf);
+		return (-1);
+	}
+	opts = opts | O_NONBLOCK;
+	if (fcntl(sock, F_SETFL, opts) < 0)
+	{
+		snprintf(log_str_buf, LOG_STR_BUF_LEN, "fcntl(sock=%d,GETFL).\n", sock);
+		LOG_INFO(LOG_LEVEL_ERROR, log_str_buf);
+		return (-1);
+	}
+	return 1;
+}
 int main(int argc, char *argv[])
 {
 	char log_file_name[128] = {0};
