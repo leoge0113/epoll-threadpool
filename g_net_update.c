@@ -105,6 +105,10 @@ static int set_non_blocking(int sock)
 	}
 	return 1;
 }
+CONFIG_INFO *get_config_info(void)
+{
+	return &config_info;
+}
 int main(int argc, char *argv[])
 {
 	char log_file_name[128] = {0};
