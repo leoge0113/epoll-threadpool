@@ -11,7 +11,7 @@ INCLUDEDIR = /usr/local/include
 # Compile flags
 CPPFLAGS = 
 CC=gcc
-
+#compile
 # ========================================================================================
 # TARGET/Source definitions
 SRCDIR = .
